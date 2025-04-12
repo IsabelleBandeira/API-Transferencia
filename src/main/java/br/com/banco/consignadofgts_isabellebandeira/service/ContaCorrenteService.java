@@ -1,6 +1,5 @@
 package br.com.banco.consignadofgts_isabellebandeira.service;
 
-import br.com.banco.consignadofgts_isabellebandeira.model.Cliente;
 import br.com.banco.consignadofgts_isabellebandeira.model.ContaCorrente;
 import br.com.banco.consignadofgts_isabellebandeira.repository.ContaCorrenteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +27,10 @@ public class ContaCorrenteService {
 
     public ContaCorrente cadastrarContaCorrente(ContaCorrente contaCorrente){
         return contaCorrenteRepository.save(contaCorrente);
+    }
+
+    public Double getSaldoContaCorrente(ContaCorrente contaCorrente){
+        return contaCorrenteRepository.findSaldoById(contaCorrente.getNumContaCorrente());
     }
 
 }

@@ -1,5 +1,6 @@
 package br.com.banco.consignadofgts_isabellebandeira.model;
 
+import br.com.banco.consignadofgts_isabellebandeira.dto.ContaCorrenteDTO;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -20,6 +21,12 @@ public class Cliente {
     private String nome;
 
     @OneToOne
-    @JoinColumn(name = "num_contacorrente", referencedColumnName = "num_contacorrente")
-    private ContaCorrente num_contacorrente;
+    @JoinColumn(name = "num_contacorrente", referencedColumnName = "numContaCorrente")
+    private ContaCorrente numContacorrente;
+
+    //Contrustor ClienteDTO
+    public Cliente(Long id, ContaCorrenteDTO numContaCorrente) {
+        this.idCliente = id;
+        this.numContacorrente = new ContaCorrente(numContaCorrente.getNumContaCorrente(), numContaCorrente.getSaldo());
+    }
 }

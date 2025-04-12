@@ -9,5 +9,5 @@ import java.util.Optional;
 
 @Repository
 public interface TransferenciaRepository extends JpaRepository<Transferencia, Long> {
-    Optional<Transferencia> findByContaCorrenteDestinoOrContaCorrenteOrigem(Long contaCorrenteDestino, Long contaCorrenteOrigem);
+    Optional<Transferencia> findByContaCorrenteDestinoOrContaCorrenteOrigemOrderByDataHoraTransferenciaDesc(Long contaCorrenteDestino, Long contaCorrenteOrigem);
 }
