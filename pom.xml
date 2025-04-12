@@ -135,7 +135,7 @@
 					<dependency>
 						<groupId>org.springframework.restdocs</groupId>
 						<artifactId>spring-restdocs-asciidoctor</artifactId>
-						<version>${spring-restdocs.version}</version>
+						<version>3.0.3</version>
 					</dependency>
 				</dependencies>
 			</plugin>
