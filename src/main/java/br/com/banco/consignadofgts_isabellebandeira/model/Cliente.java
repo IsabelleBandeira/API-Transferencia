@@ -25,8 +25,8 @@ public class Cliente {
     private ContaCorrente numContacorrente;
 
     //Contrustor ClienteDTO
-    public Cliente(Long id, ContaCorrenteDTO numContaCorrente) {
-        this.idCliente = id;
-        this.numContacorrente = new ContaCorrente(numContaCorrente.getNumContaCorrente(), numContaCorrente.getSaldo());
+    public Cliente(String nome, ContaCorrente contaCorrente) {
+        this.nome = nome;
+        this.numContacorrente = contaCorrente;
     }
 }

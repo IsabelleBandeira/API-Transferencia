@@ -6,9 +6,7 @@ import br.com.banco.consignadofgts_isabellebandeira.model.Transferencia;
 import br.com.banco.consignadofgts_isabellebandeira.repository.ContaCorrenteRepository;
 import br.com.banco.consignadofgts_isabellebandeira.repository.TransferenciaRepository;
 import jakarta.transaction.Transactional;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,11 +20,13 @@ import java.util.Optional;
 public class TransferenciaService {
     private final TransferenciaRepository transferenciaRepository;
     private final ContaCorrenteRepository contaCorrenteRepository;
+    private final ContaCorrenteService contaCorrenteService;
 
     @Autowired
-    public TransferenciaService(TransferenciaRepository transferenciaRepository, ContaCorrenteRepository contaCorrenteRepository) {
+    public TransferenciaService(TransferenciaRepository transferenciaRepository, ContaCorrenteRepository contaCorrenteRepository, ContaCorrenteService contaCorrenteService) {
         this.transferenciaRepository = transferenciaRepository;
         this.contaCorrenteRepository = contaCorrenteRepository;
+        this.contaCorrenteService = contaCorrenteService;
     }
 
     public List<Transferencia> listarTodasAsTransferencias(){
@@ -34,12 +34,13 @@ public class TransferenciaService {
     }
 
     public Optional<Transferencia> buscarPorId(Long id){
-        return transferenciaRepository.findById(id);
+        return transferenciaRepository.findByIdTransferencia(id);
 //                .orElseThrow(() -> new TransferenciaNaoEncontradaException("Transferência não encontrada"));
     }
 
-    public Optional<Transferencia> buscarPorContaCorrente(Long id){
-        return transferenciaRepository.findByContaCorrenteDestinoOrContaCorrenteOrigemOrderByDataHoraTransferenciaDesc(id, id);
+    //fix this later: it should be searched by ID, not object...
+    public Optional<Transferencia> buscarPorContaCorrente(ContaCorrente contaCorrente){
+        return transferenciaRepository.findByContaCorrenteDestinoOrContaCorrenteOrigemOrderByDataHoraTransferenciaDesc(contaCorrente, contaCorrente);
 //             .orElseThrow(() -> new TransferenciaNaoEncontradaException("Transferência não encontrada"));
     }
 

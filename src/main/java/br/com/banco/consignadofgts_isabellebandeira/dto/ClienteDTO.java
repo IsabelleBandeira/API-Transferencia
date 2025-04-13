@@ -1,6 +1,7 @@
 package br.com.banco.consignadofgts_isabellebandeira.dto;
 
 import br.com.banco.consignadofgts_isabellebandeira.model.Cliente;
+import br.com.banco.consignadofgts_isabellebandeira.model.ContaCorrente;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,10 +12,11 @@ import lombok.Setter;
 @Setter
 @Getter
 public class ClienteDTO {
-    private Long id;
-    private ContaCorrenteDTO numContaCorrente;
+    private String nome;
+    private Long numContaCorrente;
 
-    public Cliente toDomain(Long id, ContaCorrenteDTO numContaCorrente){
-        return new Cliente(id, numContaCorrente);
+    public Cliente toDomain(ContaCorrente contaCorrente) {
+//        contaCorrente.setNumContaCorrente(numContaCorrente);
+        return new Cliente(nome, contaCorrente);
     }
 }

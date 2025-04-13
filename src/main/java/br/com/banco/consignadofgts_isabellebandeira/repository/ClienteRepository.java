@@ -9,5 +9,5 @@ import java.util.Optional;
 
 @Repository
 public interface ClienteRepository extends JpaRepository<Cliente, Long> {
-    Optional<Cliente> findByNumContacorrente(Long numContacorrente);
+    Optional<Cliente> findByNumContacorrente_NumContaCorrente(Long numContacorrente);
 }

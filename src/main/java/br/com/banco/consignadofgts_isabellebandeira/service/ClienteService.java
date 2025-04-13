@@ -25,7 +25,7 @@ public class ClienteService {
     }
 
     public Optional<Cliente> buscarPorContaCorrente(Long id){
-        return clienteRepository.findByNumContacorrente(id);
+        return clienteRepository.findByNumContacorrente_NumContaCorrente(id);
     }
 
     public Cliente cadastrarCliente(Cliente cliente){

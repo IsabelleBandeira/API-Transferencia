@@ -25,7 +25,8 @@ public class ContaCorrenteService {
         return contaCorrenteRepository.findById(id);
     }
 
-    public ContaCorrente cadastrarContaCorrente(ContaCorrente contaCorrente){
+    public ContaCorrente cadastrarContaCorrente(){
+        ContaCorrente contaCorrente = new ContaCorrente();
         return contaCorrenteRepository.save(contaCorrente);
     }
 
