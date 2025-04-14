@@ -22,28 +22,15 @@ public class ContaCorrenteController {
     //mudar isso: so pode alterar o SALDO, n o id ou a conta em si
     @PostMapping("/alterarcontacorrente")
     public ResponseEntity<?> alterarContaCorrente(@RequestBody ContaCorrenteDTO contaCorrenteDTO){
-        try{
-            ContaCorrente contaCorrente = contaCorrenteDTO.toDomain();
-            Optional<ContaCorrente> contaExiste = contaCorrenteService.buscarPorId(contaCorrente.getNumContaCorrente());
-            if (contaExiste.isPresent()) {
-                contaCorrenteService.atualizarSaldoContaCorrente(contaCorrente);
-                return ResponseEntity.ok().body("Conta corrente alterada com sucesso.");
-            } else throw new RuntimeException("Conta corrente não encontrada.");
-        }catch (Exception e){ // e erro 404?
-            return ResponseEntity.badRequest().body("Erro ao alterar conta corrente: " + e.getMessage());
-        }
+        ContaCorrente contaCorrente = contaCorrenteDTO.toDomain();
+        contaCorrenteService.atualizarSaldoContaCorrente(contaCorrente);
+        return ResponseEntity.ok().body("Conta corrente atualizada com sucesso.");
     }
 
     @GetMapping("/saldo/{id}")
     public ResponseEntity<?> buscarSaldo(@PathVariable Long id){
-        try{
-            Optional<ContaCorrente> contaCorrente = contaCorrenteService.buscarPorId(id);
-            if(contaCorrente.isPresent()){
-                return ResponseEntity.ok().body(contaCorrente.get());
-            } else throw new RuntimeException("Conta não encontrada.");
-        } catch (Exception e){
-            return ResponseEntity.badRequest().body("Erro ao buscar saldo: " + e.getMessage());
-        }
+        ContaCorrente contaCorrente = contaCorrenteService.buscarPorId(id);
+        return ResponseEntity.ok().body(contaCorrente);
     }
 
     @GetMapping("/listacontas")

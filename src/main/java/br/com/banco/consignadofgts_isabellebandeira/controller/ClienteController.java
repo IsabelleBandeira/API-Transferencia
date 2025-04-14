@@ -9,8 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1/cliente")
@@ -26,14 +24,10 @@ public class ClienteController {
 
     @PostMapping("/cadastracliente")
     public ResponseEntity<?> cadastrarCliente(@RequestBody ClienteDTO clienteDTO) {
-        try {
-            ContaCorrente contacorrente = contaCorrenteService.cadastrarContaCorrente();
-            Cliente cliente = clienteDTO.toDomain(contacorrente);
-            clienteService.cadastrarCliente(cliente);
-            return ResponseEntity.ok("Cliente cadastrado com sucesso.");
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Erro ao cadastrar cliente: " + e.getMessage());
-        }
+        ContaCorrente contacorrente = contaCorrenteService.cadastrarContaCorrente();
+        Cliente cliente = clienteDTO.toDomain(contacorrente);
+        clienteService.cadastrarCliente(cliente);
+        return ResponseEntity.ok("Cliente cadastrado com sucesso.");
     }
 
     @GetMapping("/listaclientes")
@@ -44,47 +38,27 @@ public class ClienteController {
 
     @GetMapping("/buscaporcontacorrente/")
     public ResponseEntity<Object> buscarClientePorContaCorrente(@RequestParam Long numContaCorrente){
-        Optional<Cliente> cliente = clienteService.buscarPorContaCorrente(numContaCorrente);
-        if (cliente.isPresent()) {
-            return ResponseEntity.ok(cliente.get());
-        } else {
-            Map<String, String> response = Map.of("message", "Nenhum cliente encontrado com essa conta corrente.");
-            return ResponseEntity.status(404).body(response);
-        }
+        Cliente cliente = clienteService.buscarPorContaCorrente(numContaCorrente);
+        return ResponseEntity.ok(cliente);
     }
 
     @DeleteMapping("{id}")
     public ResponseEntity<?> deletarCliente(@PathVariable Long id){
-        try{
-            clienteService.deletarCliente(id);
-            return ResponseEntity.ok().body("Cliente deletado com sucesso.");
-        }catch (Exception e){
-            return ResponseEntity.badRequest().body("Erro ao deletar cliente: " + e.getMessage());
-        }
+        clienteService.deletarCliente(id);
+        return ResponseEntity.ok().body("Cliente deletado com sucesso.");
     }
 
     @PostMapping("/atualizacliente/{id}")
     public ResponseEntity<?> atualizaCliente(@PathVariable Long id){
-        try{
-            Cliente cliente = clienteService.buscarPorId(id)
-                    .orElseThrow(() -> new RuntimeException("Cliente não encontrado."));
-            clienteService.atualizarCliente(cliente);
-            return ResponseEntity.ok().body("Cliente atualizado com sucesso.");
-        }catch (Exception e){
-            return ResponseEntity.badRequest().body("Erro ao atualizar cliente: " + e.getMessage());
-        }
-
+        Cliente cliente = clienteService.buscarPorId(id);
+        clienteService.atualizarCliente(cliente);
+        return ResponseEntity.ok().body("Cliente atualizado com sucesso.");
     }
 
     @GetMapping("{id}")
     public ResponseEntity<?> buscaClientePorId(@PathVariable Long id){
-        try{
-            Cliente cliente = clienteService.buscarPorId(id)
-                    .orElseThrow(() -> new RuntimeException("Cliente não encontrado."));
-            return ResponseEntity.ok().body(cliente);
-        } catch (Exception e) {
-            throw new RuntimeException("Erro ao buscar cliente: "+ e.getMessage());
-        }
+        Cliente cliente = clienteService.buscarPorId(id);
+        return ResponseEntity.ok().body(cliente);
     }
 
 }

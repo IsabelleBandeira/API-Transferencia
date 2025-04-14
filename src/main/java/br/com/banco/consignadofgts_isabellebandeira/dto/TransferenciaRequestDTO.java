@@ -18,12 +18,8 @@ public class TransferenciaRequestDTO {
     private Long idContaOrigem;
     private Long idContaDestino;
 
-    public Transferencia toDomain(Optional<ContaCorrente> contaOrigem, Optional<ContaCorrente> contaDestino) {
-        return new Transferencia(
-                valorTransferencia,
-                contaOrigem.orElseThrow(() -> new IllegalArgumentException("Conta de origem não encontrada.")),
-                contaDestino.orElseThrow(() -> new IllegalArgumentException("Conta de destino não encontrada."))
-        );
+    public Transferencia toDomain(ContaCorrente contaOrigem, ContaCorrente contaDestino) {
+        return new Transferencia(valorTransferencia, contaOrigem, contaDestino);
     }
 
 }

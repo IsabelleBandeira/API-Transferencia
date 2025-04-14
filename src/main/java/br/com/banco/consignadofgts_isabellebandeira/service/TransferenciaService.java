@@ -1,6 +1,7 @@
 package br.com.banco.consignadofgts_isabellebandeira.service;
 
 import br.com.banco.consignadofgts_isabellebandeira.enums.StatusTransferencia;
+import br.com.banco.consignadofgts_isabellebandeira.exception.transferencia.TransferenciaNaoEncontradaException;
 import br.com.banco.consignadofgts_isabellebandeira.model.ContaCorrente;
 import br.com.banco.consignadofgts_isabellebandeira.model.Transferencia;
 import br.com.banco.consignadofgts_isabellebandeira.repository.ContaCorrenteRepository;
@@ -32,9 +33,9 @@ public class TransferenciaService {
         return transferenciaRepository.findAll();
     }
 
-    public Optional<Transferencia> buscarPorId(Long id){
-        return transferenciaRepository.findByIdTransferencia(id);
-//                .orElseThrow(() -> new TransferenciaNaoEncontradaException("Transferência não encontrada"));
+    public Transferencia buscarPorId(Long id){
+        return transferenciaRepository.findByIdTransferencia(id)
+                .orElseThrow(() -> new TransferenciaNaoEncontradaException("Não foi encontrada nenhuma transferência com esse id."));
     }
 
     //fix this later: it should be searched by ID, not object...

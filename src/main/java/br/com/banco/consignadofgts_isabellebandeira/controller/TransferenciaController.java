@@ -29,8 +29,8 @@ public class TransferenciaController {
     @PostMapping()
     public ResponseEntity<?> transferir(@RequestBody TransferenciaRequestDTO transferenciaRequestDTO) {
         try{
-            Optional<ContaCorrente> contaOrigem = contaCorrenteService.buscarPorId(transferenciaRequestDTO.getIdContaOrigem());
-            Optional<ContaCorrente> contaDestino = contaCorrenteService.buscarPorId(transferenciaRequestDTO.getIdContaDestino());
+            ContaCorrente contaOrigem = contaCorrenteService.buscarPorId(transferenciaRequestDTO.getIdContaOrigem());
+            ContaCorrente contaDestino = contaCorrenteService.buscarPorId(transferenciaRequestDTO.getIdContaDestino());
             Transferencia transferencia = transferenciaRequestDTO.toDomain(contaOrigem, contaDestino);
             transferenciaService.cadastrarTransferencia(transferencia);
             transferenciaService.atualizarStatusTransferencia(transferencia);
@@ -46,8 +46,7 @@ public class TransferenciaController {
     @GetMapping("/buscaporconta/")
     public ResponseEntity<Object> buscarTransferenciaPorContaCorrente(@RequestParam Long numContaCorrente){
         try {
-            ContaCorrente contaCorrente = contaCorrenteService.buscarPorId(numContaCorrente)
-                    .orElseThrow(() -> new RuntimeException("Conta corrente não encontrada."));
+            ContaCorrente contaCorrente = contaCorrenteService.buscarPorId(numContaCorrente);
             Optional<List<Transferencia>> listaTransferencia = transferenciaService.buscarPorContaCorrente(contaCorrente);
             if (listaTransferencia.isPresent()) {
                 List<TransferenciaResponseDTO> response = listaTransferencia.get().stream()
@@ -95,12 +94,7 @@ public class TransferenciaController {
 
     @GetMapping("{id}")
     public ResponseEntity<?> buscaTransferenciaPorId(@PathVariable Long id){
-        try{
-            Transferencia transferencia = transferenciaService.buscarPorId(id)
-                    .orElseThrow(() -> new RuntimeException("Não foi encontrada nenhuma transferência com esse id."));
-            return ResponseEntity.ok().body(transferencia);
-        }catch (Exception e){
-            return ResponseEntity.badRequest().body("Erro ao buscar transferência: " + e.getMessage());
-        }
+        Transferencia transferencia = transferenciaService.buscarPorId(id);
+        return ResponseEntity.ok().body(transferencia);
     }
 }
