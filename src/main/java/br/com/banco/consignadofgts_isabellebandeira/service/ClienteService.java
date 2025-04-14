@@ -23,7 +23,11 @@ public class ClienteService {
     }
 
     public List<Cliente> listarTodosOsClientes(){
-        return clienteRepository.findAll();
+        List<Cliente> listaclientes = clienteRepository.findAll();
+        if (listaclientes.isEmpty()) {
+            throw new ClienteNaoEncontradoException("Não há clientes cadastrados no momento.");
+        }
+        return listaclientes;
     }
 
     public Cliente buscarPorId(Long id){

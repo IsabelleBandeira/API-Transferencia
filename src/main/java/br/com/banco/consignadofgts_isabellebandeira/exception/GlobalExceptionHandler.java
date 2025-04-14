@@ -44,7 +44,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(ClienteNaoCadastradoException.class)
     public ResponseEntity<?> handleClienteNaoCadastrado(ClienteNaoCadastradoException ex) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(Map.of("error", "Erro ao cadastrar cliente: " + ex.getMessage()));
     }
 
