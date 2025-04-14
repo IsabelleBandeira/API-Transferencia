@@ -6,13 +6,20 @@ import br.com.banco.consignadofgts_isabellebandeira.exception.cliente.ClienteNao
 import br.com.banco.consignadofgts_isabellebandeira.exception.cliente.ClienteNaoEncontradoException;
 import br.com.banco.consignadofgts_isabellebandeira.exception.conta.ContaNaoAtualizadaException;
 import br.com.banco.consignadofgts_isabellebandeira.exception.conta.ContaNaoEncontradaException;
+import br.com.banco.consignadofgts_isabellebandeira.exception.transferencia.SaldoInsuficienteException;
+import br.com.banco.consignadofgts_isabellebandeira.exception.transferencia.TransferenciaInvalidaException;
 import br.com.banco.consignadofgts_isabellebandeira.exception.transferencia.TransferenciaNaoEncontradaException;
+import br.com.banco.consignadofgts_isabellebandeira.exception.transferencia.ValorLimiteExcedidoException;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -68,13 +75,28 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ContaNaoAtualizadaException.class)
     public ResponseEntity<?> handleContaNaoAtualizada(ContaNaoAtualizadaException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(Map.of("error", "Erro ao atualizar cliente: " + ex.getMessage()));
+                .body(Map.of("error", "Erro ao atualizar conta: " + ex.getMessage()));
     }
 
     @ExceptionHandler(TransferenciaNaoEncontradaException.class)
     public ResponseEntity<?> handleTransferenciaNaoEncontrada(TransferenciaNaoEncontradaException ex) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(Map.of("error", "Erro ao procurar transferência: " + ex.getMessage()));
+    }
+
+    @ExceptionHandler(TransferenciaInvalidaException.class)
+    public ResponseEntity<?> handleTransferenciaInvalida(TransferenciaInvalidaException ex) {
+        return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY)
+                .body(Map.of("error", "Erro ao realizar transferência: " + ex.getMessage()));
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<?> handleErroValidacao(MethodArgumentNotValidException ex) {
+        List<String> erros = ex.getBindingResult().getFieldErrors()
+                .stream()
+                .map(f -> f.getField() + ": " + f.getDefaultMessage())
+                .toList();
+        return ResponseEntity.badRequest().body(Map.of("Erro(s) de Validação identificado(s)", erros));
     }
 
 }

@@ -6,12 +6,11 @@ import br.com.banco.consignadofgts_isabellebandeira.model.ContaCorrente;
 import br.com.banco.consignadofgts_isabellebandeira.model.Transferencia;
 import br.com.banco.consignadofgts_isabellebandeira.service.ContaCorrenteService;
 import br.com.banco.consignadofgts_isabellebandeira.service.TransferenciaService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
@@ -27,69 +26,48 @@ public class TransferenciaController {
     }
 
     @PostMapping()
-    public ResponseEntity<?> transferir(@RequestBody TransferenciaRequestDTO transferenciaRequestDTO) {
-        try{
-            ContaCorrente contaOrigem = contaCorrenteService.buscarPorId(transferenciaRequestDTO.getIdContaOrigem());
-            ContaCorrente contaDestino = contaCorrenteService.buscarPorId(transferenciaRequestDTO.getIdContaDestino());
-            Transferencia transferencia = transferenciaRequestDTO.toDomain(contaOrigem, contaDestino);
-            transferenciaService.cadastrarTransferencia(transferencia);
-            transferenciaService.atualizarStatusTransferencia(transferencia);
-            transferenciaService.realizarTransferencia(transferencia);
-            transferenciaService.finalizarTransferencia(transferencia);
-            return ResponseEntity.ok().body("Transferência realizada com sucesso!");
-        }catch (Exception e){
-            return ResponseEntity.badRequest().body("Erro ao realizar transferência: " + e.getMessage());
-        }
-
+    public ResponseEntity<?> transferir(@RequestBody @Valid TransferenciaRequestDTO transferenciaRequestDTO) {
+        ContaCorrente contaOrigem = contaCorrenteService.buscarPorId(transferenciaRequestDTO.getIdContaOrigem());
+        ContaCorrente contaDestino = contaCorrenteService.buscarPorId(transferenciaRequestDTO.getIdContaDestino());
+        Transferencia transferencia = transferenciaRequestDTO.toDomain(contaOrigem, contaDestino);
+        transferenciaService.cadastrarTransferencia(transferencia);
+        transferenciaService.validaTransferencia(transferencia);
+        transferenciaService.realizarTransferencia(transferencia);
+        transferenciaService.finalizarTransferencia(transferencia);
+        return ResponseEntity.ok().body("Transferência realizada com sucesso!");
     }
 
     @GetMapping("/buscaporconta/")
     public ResponseEntity<Object> buscarTransferenciaPorContaCorrente(@RequestParam Long numContaCorrente){
-        try {
-            ContaCorrente contaCorrente = contaCorrenteService.buscarPorId(numContaCorrente);
-            Optional<List<Transferencia>> listaTransferencia = transferenciaService.buscarPorContaCorrente(contaCorrente);
-            if (listaTransferencia.isPresent()) {
-                List<TransferenciaResponseDTO> response = listaTransferencia.get().stream()
-                        .map(t -> new TransferenciaResponseDTO(
-                                t.getIdTransferencia(),
-                                t.getContaCorrenteOrigem(),
-                                t.getContaCorrenteDestino(),
-                                t.getValorTransferencia(),
-                                t.getStatusTransferencia().name(),
-                                t.getDataHoraTransferencia()
-                        ))
-                        .collect(Collectors.toList());
-                return ResponseEntity.ok(response);
-            } else {
-                Map<String, String> response = Map.of("message", "Nenhuma transferência encontrada associada a essa conta corrente.");
-                return ResponseEntity.status(404).body(response);
-            }
-        }catch (Exception e){
-            return ResponseEntity.badRequest().body("Erro ao buscar transferência: " + e.getMessage());
-        }
+        ContaCorrente contaCorrente = contaCorrenteService.buscarPorId(numContaCorrente);
+        List<Transferencia> listaTransferencia = transferenciaService.buscarPorContaCorrente(contaCorrente);
+        List<TransferenciaResponseDTO> response = listaTransferencia.stream()
+                .map(t -> new TransferenciaResponseDTO(
+                        t.getIdTransferencia(),
+                        t.getContaCorrenteOrigem(),
+                        t.getContaCorrenteDestino(),
+                        t.getValorTransferencia(),
+                        t.getStatusTransferencia().name(),
+                        t.getDataHoraTransferencia()
+                ))
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/listatransferencias")
     public ResponseEntity<?> listarTransferencias(){
-        try{
-            List<Transferencia> listaTransferencia =  transferenciaService.listarTodasAsTransferencias();
-            if (!listaTransferencia.isEmpty()) {
-                List<TransferenciaResponseDTO> response = listaTransferencia.stream()
-                        .map(t -> new TransferenciaResponseDTO(
-                                t.getIdTransferencia(),
-                                t.getContaCorrenteOrigem(),
-                                t.getContaCorrenteDestino(),
-                                t.getValorTransferencia(),
-                                t.getStatusTransferencia().name(),
-                                t.getDataHoraTransferencia()
-                        ))
-                        .collect(Collectors.toList());
-                return ResponseEntity.ok(response);
-            } else throw new RuntimeException("Não existem transações cadastradas no momento.");
-        }catch (Exception e){
-            return ResponseEntity.badRequest().body("Erro ao listar transferências: " + e.getMessage());
-        }
-
+        List<Transferencia> listaTransferencia =  transferenciaService.listarTodasAsTransferencias();
+        List<TransferenciaResponseDTO> response = listaTransferencia.stream()
+                .map(t -> new TransferenciaResponseDTO(
+                        t.getIdTransferencia(),
+                        t.getContaCorrenteOrigem(),
+                        t.getContaCorrenteDestino(),
+                        t.getValorTransferencia(),
+                        t.getStatusTransferencia().name(),
+                        t.getDataHoraTransferencia()
+                ))
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("{id}")

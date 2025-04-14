@@ -3,11 +3,11 @@ package br.com.banco.consignadofgts_isabellebandeira.controller;
 import br.com.banco.consignadofgts_isabellebandeira.dto.ContaCorrenteDTO;
 import br.com.banco.consignadofgts_isabellebandeira.model.ContaCorrente;
 import br.com.banco.consignadofgts_isabellebandeira.service.ContaCorrenteService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1/conta-corrente")
@@ -21,7 +21,7 @@ public class ContaCorrenteController {
 
     //mudar isso: so pode alterar o SALDO, n o id ou a conta em si
     @PostMapping("/alterarcontacorrente")
-    public ResponseEntity<?> alterarContaCorrente(@RequestBody ContaCorrenteDTO contaCorrenteDTO){
+    public ResponseEntity<?> alterarContaCorrente(@RequestBody @Valid ContaCorrenteDTO contaCorrenteDTO){
         ContaCorrente contaCorrente = contaCorrenteDTO.toDomain();
         contaCorrenteService.atualizarSaldoContaCorrente(contaCorrente);
         return ResponseEntity.ok().body("Conta corrente atualizada com sucesso.");

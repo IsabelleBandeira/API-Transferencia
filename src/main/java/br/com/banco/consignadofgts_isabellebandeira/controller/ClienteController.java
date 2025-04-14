@@ -5,6 +5,7 @@ import br.com.banco.consignadofgts_isabellebandeira.model.Cliente;
 import br.com.banco.consignadofgts_isabellebandeira.model.ContaCorrente;
 import br.com.banco.consignadofgts_isabellebandeira.service.ClienteService;
 import br.com.banco.consignadofgts_isabellebandeira.service.ContaCorrenteService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,7 +24,7 @@ public class ClienteController {
     }
 
     @PostMapping("/cadastracliente")
-    public ResponseEntity<?> cadastrarCliente(@RequestBody ClienteDTO clienteDTO) {
+    public ResponseEntity<?> cadastrarCliente(@RequestBody @Valid ClienteDTO clienteDTO) {
         ContaCorrente contacorrente = contaCorrenteService.cadastrarContaCorrente();
         Cliente cliente = clienteDTO.toDomain(contacorrente);
         clienteService.cadastrarCliente(cliente);
