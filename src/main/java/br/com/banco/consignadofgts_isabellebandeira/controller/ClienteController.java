@@ -28,7 +28,6 @@ public class ClienteController {
     public ResponseEntity<?> cadastrarCliente(@RequestBody ClienteDTO clienteDTO) {
         try {
             ContaCorrente contacorrente = contaCorrenteService.cadastrarContaCorrente();
-//            Cliente cliente = new Cliente(clienteDTO.getNome(), contacorrente.getNumContaCorrente());
             Cliente cliente = clienteDTO.toDomain(contacorrente);
             clienteService.cadastrarCliente(cliente);
             return ResponseEntity.ok("Cliente cadastrado com sucesso.");
@@ -43,7 +42,7 @@ public class ClienteController {
         return ResponseEntity.ok().body(listaClientes);
     }
 
-    @GetMapping("/buscaporconta/")
+    @GetMapping("/buscaporcontacorrente/")
     public ResponseEntity<Object> buscarClientePorContaCorrente(@RequestParam Long numContaCorrente){
         Optional<Cliente> cliente = clienteService.buscarPorContaCorrente(numContaCorrente);
         if (cliente.isPresent()) {
@@ -51,6 +50,40 @@ public class ClienteController {
         } else {
             Map<String, String> response = Map.of("message", "Nenhum cliente encontrado com essa conta corrente.");
             return ResponseEntity.status(404).body(response);
+        }
+    }
+
+    @DeleteMapping("{id}")
+    public ResponseEntity<?> deletarCliente(@PathVariable Long id){
+        try{
+            clienteService.deletarCliente(id);
+            return ResponseEntity.ok().body("Cliente deletado com sucesso.");
+        }catch (Exception e){
+            return ResponseEntity.badRequest().body("Erro ao deletar cliente: " + e.getMessage());
+        }
+    }
+
+    @PostMapping("/atualizacliente/{id}")
+    public ResponseEntity<?> atualizaCliente(@PathVariable Long id){
+        try{
+            Cliente cliente = clienteService.buscarPorId(id)
+                    .orElseThrow(() -> new RuntimeException("Cliente não encontrado."));
+            clienteService.atualizarCliente(cliente);
+            return ResponseEntity.ok().body("Cliente atualizado com sucesso.");
+        }catch (Exception e){
+            return ResponseEntity.badRequest().body("Erro ao atualizar cliente: " + e.getMessage());
+        }
+
+    }
+
+    @GetMapping("{id}")
+    public ResponseEntity<?> buscaClientePorId(@PathVariable Long id){
+        try{
+            Cliente cliente = clienteService.buscarPorId(id)
+                    .orElseThrow(() -> new RuntimeException("Cliente não encontrado."));
+            return ResponseEntity.ok().body(cliente);
+        } catch (Exception e) {
+            throw new RuntimeException("Erro ao buscar cliente: "+ e.getMessage());
         }
     }
 

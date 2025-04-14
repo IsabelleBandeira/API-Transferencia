@@ -10,7 +10,6 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.Optional;
 
@@ -39,7 +38,7 @@ public class TransferenciaService {
     }
 
     //fix this later: it should be searched by ID, not object...
-    public Optional<Transferencia> buscarPorContaCorrente(ContaCorrente contaCorrente){
+    public Optional<List<Transferencia>> buscarPorContaCorrente(ContaCorrente contaCorrente){
         return transferenciaRepository.findByContaCorrenteDestinoOrContaCorrenteOrigemOrderByDataHoraTransferenciaDesc(contaCorrente, contaCorrente);
 //             .orElseThrow(() -> new TransferenciaNaoEncontradaException("Transferência não encontrada"));
     }

@@ -1,6 +1,5 @@
 package br.com.banco.consignadofgts_isabellebandeira.model;
 
-import br.com.banco.consignadofgts_isabellebandeira.dto.ContaCorrenteDTO;
 import br.com.banco.consignadofgts_isabellebandeira.enums.StatusTransferencia;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -49,7 +48,7 @@ public class Transferencia {
     }
 
     //Construtor TransferenciaRequestDTO
-    public Transferencia(Double valorTransferencia, ContaCorrenteDTO idContaOrigem, ContaCorrenteDTO idContaDestino) {
+    public Transferencia(Double valorTransferencia, ContaCorrente idContaOrigem, ContaCorrente idContaDestino) {
         this.valorTransferencia = valorTransferencia;
         this.contaCorrenteOrigem = new ContaCorrente(idContaOrigem.getNumContaCorrente(), idContaOrigem.getSaldo());
         this.contaCorrenteDestino = new ContaCorrente(idContaDestino.getNumContaCorrente(), idContaDestino.getSaldo());

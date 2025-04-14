@@ -1,6 +1,5 @@
 package br.com.banco.consignadofgts_isabellebandeira.model;
 
-import br.com.banco.consignadofgts_isabellebandeira.dto.ContaCorrenteDTO;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

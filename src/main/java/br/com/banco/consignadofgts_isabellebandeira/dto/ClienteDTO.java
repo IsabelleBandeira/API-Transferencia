@@ -16,7 +16,6 @@ public class ClienteDTO {
     private Long numContaCorrente;
 
     public Cliente toDomain(ContaCorrente contaCorrente) {
-//        contaCorrente.setNumContaCorrente(numContaCorrente);
         return new Cliente(nome, contaCorrente);
     }
 }
