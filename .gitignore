@@ -1,4 +1,3 @@
-HELP.md
 target/
 !.mvn/wrapper/maven-wrapper.jar
 .mvn/wrapper
@@ -7,7 +6,6 @@ mvnw.cmd
 !**/src/main/**/target/
 !**/src/test/**/target/
 
-compose.yaml
 
 ### STS ###
 .apt_generated
