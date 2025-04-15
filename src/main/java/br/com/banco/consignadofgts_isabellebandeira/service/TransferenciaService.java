@@ -1,10 +1,10 @@
 package br.com.banco.consignadofgts_isabellebandeira.service;
 
 import br.com.banco.consignadofgts_isabellebandeira.enums.StatusTransferencia;
-import br.com.banco.consignadofgts_isabellebandeira.exception.transferencia.SaldoInsuficienteException;
+import br.com.banco.consignadofgts_isabellebandeira.exception.cliente.ClienteNaoEncontradoException;
 import br.com.banco.consignadofgts_isabellebandeira.exception.transferencia.TransferenciaInvalidaException;
 import br.com.banco.consignadofgts_isabellebandeira.exception.transferencia.TransferenciaNaoEncontradaException;
-import br.com.banco.consignadofgts_isabellebandeira.exception.transferencia.ValorLimiteExcedidoException;
+import br.com.banco.consignadofgts_isabellebandeira.model.Cliente;
 import br.com.banco.consignadofgts_isabellebandeira.model.ContaCorrente;
 import br.com.banco.consignadofgts_isabellebandeira.model.Transferencia;
 import br.com.banco.consignadofgts_isabellebandeira.repository.ContaCorrenteRepository;
@@ -13,7 +13,6 @@ import jakarta.transaction.Transactional;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Objects;
@@ -34,7 +33,11 @@ public class TransferenciaService {
     }
 
     public List<Transferencia> listarTodasAsTransferencias(){
-        return transferenciaRepository.findAll();
+        List<Transferencia> listaTransferencia = transferenciaRepository.findAll();
+        if (listaTransferencia.isEmpty()) {
+            throw new TransferenciaNaoEncontradaException("Não há transferências cadastrados no momento.");
+        }
+        return listaTransferencia;
     }
 
     public Transferencia buscarPorId(Long id){
@@ -42,27 +45,27 @@ public class TransferenciaService {
                 .orElseThrow(() -> new TransferenciaNaoEncontradaException("Não foi encontrada nenhuma transferência com esse id."));
     }
 
-    //fix this later: it should be searched by ID, not object...
     public List<Transferencia> buscarPorContaCorrente(ContaCorrente contaCorrente){
         return transferenciaRepository.findByContaCorrenteDestinoOrContaCorrenteOrigemOrderByDataHoraTransferenciaDesc(contaCorrente, contaCorrente)
                 .orElseThrow(() -> new TransferenciaNaoEncontradaException("Transferência não encontrada"));
     }
 
     @Transactional
-    public void cadastrarTransferencia(Transferencia transferencia){
-        transferenciaRepository.save(transferencia);
+    public Transferencia cadastrarTransferencia(Transferencia transferencia){
+        return transferenciaRepository.save(transferencia);
     }
 
     public boolean validarSaldoContaOrigem(Transferencia transferencia){
         ContaCorrente contaCorrente = transferencia.getContaCorrenteOrigem();
-        return contaCorrenteRepository.findSaldoById(contaCorrente.getNumContaCorrente()) >= transferencia.getValorTransferencia();
+        return contaCorrenteRepository
+                .findSaldoById(contaCorrente.getNumContaCorrente()) >= transferencia.getValorTransferencia();
     }
 
     public boolean validarLimite(Transferencia transferencia){
         return transferencia.getValorTransferencia() <= 100.00;
     }
 
-    public void validaTransferencia(Transferencia transferencia){
+    public Transferencia validaTransferencia(Transferencia transferencia){
         if (!validarLimite(transferencia)) {
             transferencia.setStatusTransferencia(StatusTransferencia.FALHA);
             transferenciaRepository.save(transferencia);
@@ -78,14 +81,13 @@ public class TransferenciaService {
             transferenciaRepository.save(transferencia);
             throw new TransferenciaInvalidaException("Não é permitido fazer transferências entre uma mesma conta.");
         }
+        return transferencia;
     }
 
     @Transactional
     public void realizarTransferencia(Transferencia transferencia){
         try{
             Double valor = transferencia.getValorTransferencia();
-//            ContaCorrente contaCorrenteOrigem = transferencia.getContaCorrenteOrigem();
-//            ContaCorrente contaCorrenteDestino = transferencia.getContaCorrenteDestino();
 
             ContaCorrente contaCorrenteOrigem = contaCorrenteService.buscarPorId(transferencia.getContaCorrenteOrigem().getNumContaCorrente());
             ContaCorrente contaCorrenteDestino = contaCorrenteService.buscarPorId(transferencia.getContaCorrenteDestino().getNumContaCorrente());
@@ -108,9 +110,9 @@ public class TransferenciaService {
     }
 
     @Transactional
-    public void finalizarTransferencia(Transferencia transferencia) {
+    public Transferencia finalizarTransferencia(Transferencia transferencia) {
         transferencia.setStatusTransferencia(StatusTransferencia.FINALIZADO);
-        transferenciaRepository.save(transferencia);
+        return transferenciaRepository.save(transferencia);
     }
 
 }

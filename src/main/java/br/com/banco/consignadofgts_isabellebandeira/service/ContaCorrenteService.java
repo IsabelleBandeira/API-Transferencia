@@ -39,13 +39,14 @@ public class ContaCorrenteService {
     }
 
     @Transactional
-    public ContaCorrente atualizarSaldoContaCorrente(ContaCorrente contaCorrente){
+    public ContaCorrente depositarSaldoContaCorrente(Double valor, ContaCorrente contaCorrente){
         try{
+            contaCorrente.setSaldo(contaCorrente.getSaldo() + valor);
             return contaCorrenteRepository.save(contaCorrente);
         } catch (EmptyResultDataAccessException e){
             throw new ContaNaoEncontradaException("Conta não encontrada.");
         } catch (Exception e){
-            throw new ClienteNaoAtualizadoException(e.getMessage());
+            throw new ContaNaoAtualizadaException(e.getMessage());
         }
     }
 

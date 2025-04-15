@@ -6,10 +6,8 @@ import br.com.banco.consignadofgts_isabellebandeira.exception.cliente.ClienteNao
 import br.com.banco.consignadofgts_isabellebandeira.exception.cliente.ClienteNaoEncontradoException;
 import br.com.banco.consignadofgts_isabellebandeira.exception.conta.ContaNaoAtualizadaException;
 import br.com.banco.consignadofgts_isabellebandeira.exception.conta.ContaNaoEncontradaException;
-import br.com.banco.consignadofgts_isabellebandeira.exception.transferencia.SaldoInsuficienteException;
 import br.com.banco.consignadofgts_isabellebandeira.exception.transferencia.TransferenciaInvalidaException;
 import br.com.banco.consignadofgts_isabellebandeira.exception.transferencia.TransferenciaNaoEncontradaException;
-import br.com.banco.consignadofgts_isabellebandeira.exception.transferencia.ValorLimiteExcedidoException;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +17,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {

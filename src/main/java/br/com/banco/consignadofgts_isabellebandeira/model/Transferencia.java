@@ -2,10 +2,7 @@ package br.com.banco.consignadofgts_isabellebandeira.model;
 
 import br.com.banco.consignadofgts_isabellebandeira.enums.StatusTransferencia;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
@@ -15,6 +12,7 @@ import java.time.LocalDateTime;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class Transferencia {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

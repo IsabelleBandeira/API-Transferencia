@@ -19,11 +19,12 @@ public class ContaCorrenteController {
         this.contaCorrenteService = contaCorrenteService;
     }
 
-    //mudar isso: so pode alterar o SALDO, n o id ou a conta em si
-    @PostMapping("/alterarcontacorrente")
-    public ResponseEntity<?> alterarContaCorrente(@RequestBody @Valid ContaCorrenteDTO contaCorrenteDTO){
-        ContaCorrente contaCorrente = contaCorrenteDTO.toDomain();
-        contaCorrenteService.atualizarSaldoContaCorrente(contaCorrente);
+    @PostMapping("/depositar")
+    public ResponseEntity<?> depositarSaldo(@RequestBody @Valid ContaCorrenteDTO contaCorrenteDTO){
+        ContaCorrente contaCorrenteRequest = contaCorrenteDTO.toDomain();
+        Double valorDeposito = contaCorrenteRequest.getSaldo();
+        ContaCorrente contaCorrente = contaCorrenteService.buscarPorId(contaCorrenteRequest.getNumContaCorrente());
+        contaCorrenteService.depositarSaldoContaCorrente(valorDeposito, contaCorrente);
         return ResponseEntity.ok().body("Conta corrente atualizada com sucesso.");
     }
 

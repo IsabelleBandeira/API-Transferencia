@@ -1,4 +1,4 @@
-package br.com.banco.consignadofgts_isabellebandeira.test;
+package br.com.banco.consignadofgts_isabellebandeira.test.cliente;
 
 import br.com.banco.consignadofgts_isabellebandeira.exception.cliente.ClienteNaoAtualizadoException;
 import br.com.banco.consignadofgts_isabellebandeira.exception.cliente.ClienteNaoCadastradoException;
