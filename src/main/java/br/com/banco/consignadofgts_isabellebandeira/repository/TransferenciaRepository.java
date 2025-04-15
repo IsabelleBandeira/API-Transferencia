@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Optional;
 
+//Acesso ao banco de dados
 @Repository
 public interface TransferenciaRepository extends JpaRepository<Transferencia, ContaCorrente> {
     Optional<List<Transferencia>> findByContaCorrenteDestinoOrContaCorrenteOrigemOrderByDataHoraTransferenciaDesc(ContaCorrente contaCorrenteDestino, ContaCorrente contaCorrenteOrigem);

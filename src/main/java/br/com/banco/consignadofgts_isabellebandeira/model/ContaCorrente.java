@@ -3,7 +3,6 @@ package br.com.banco.consignadofgts_isabellebandeira.model;
 import jakarta.persistence.*;
 import lombok.*;
 
-
 @Entity
 @Table(name = "tb_conta_corrente")
 @Getter

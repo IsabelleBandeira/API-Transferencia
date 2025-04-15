@@ -1,9 +1,9 @@
 package br.com.banco.consignadofgts_isabellebandeira.service;
 
-import br.com.banco.consignadofgts_isabellebandeira.exception.cliente.ClienteNaoAtualizadoException;
 import br.com.banco.consignadofgts_isabellebandeira.exception.cliente.ClienteNaoEncontradoException;
 import br.com.banco.consignadofgts_isabellebandeira.exception.conta.ContaNaoAtualizadaException;
 import br.com.banco.consignadofgts_isabellebandeira.exception.conta.ContaNaoEncontradaException;
+import br.com.banco.consignadofgts_isabellebandeira.model.Cliente;
 import br.com.banco.consignadofgts_isabellebandeira.model.ContaCorrente;
 import br.com.banco.consignadofgts_isabellebandeira.repository.ContaCorrenteRepository;
 import jakarta.transaction.Transactional;
@@ -12,8 +12,8 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
+//Acesso aos métodos com as regras de negócio
 @Service
 public class ContaCorrenteService {
     private final ContaCorrenteRepository contaCorrenteRepository;
@@ -23,21 +23,30 @@ public class ContaCorrenteService {
         this.contaCorrenteRepository = contaCorrenteRepository;
     }
 
+    // Lista todas as contas cadastradas no banco de dados e lança exceção se não encontrar nenhuma.
     public List<ContaCorrente> listarTodasAsContas(){
-        return contaCorrenteRepository.findAll();
+        List<ContaCorrente> listacontas = contaCorrenteRepository.findAll();
+        if (listacontas.isEmpty()) {
+            throw new ContaNaoEncontradaException("Não há contas cadastradas no momento.");
+        }
+        return listacontas;
     }
 
+    //Busca conta-corrente pelo número da conta e lança exceção se não encontrar.
     public ContaCorrente buscarPorId(Long id){
         return contaCorrenteRepository.findById(id)
                 .orElseThrow(() -> new ContaNaoEncontradaException("Conta não encontrada."));
     }
 
+    //Cadastra uma nova conta no banco de dados e dá rollback se inserção falhar
     @Transactional
     public ContaCorrente cadastrarContaCorrente(){
         ContaCorrente contaCorrente = new ContaCorrente();
         return contaCorrenteRepository.save(contaCorrente);
     }
 
+    //Recebe valor e uma conta-corrente, soma esse valor ao saldo cadastrado na conta-corrente
+    // e dá rollback caso conta não seja encontrada ou atualização falhe
     @Transactional
     public ContaCorrente depositarSaldoContaCorrente(Double valor, ContaCorrente contaCorrente){
         try{

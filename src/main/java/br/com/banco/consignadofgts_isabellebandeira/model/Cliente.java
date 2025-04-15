@@ -1,8 +1,6 @@
 package br.com.banco.consignadofgts_isabellebandeira.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
 import lombok.*;
 
 @Entity

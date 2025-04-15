@@ -30,6 +30,7 @@ public class TransferenciaRequestDTO {
     @Positive
     private Long idContaDestino;
 
+    //Conversão para acesso aos metodos da classe
     public Transferencia toDomain(ContaCorrente contaOrigem, ContaCorrente contaDestino) {
         return new Transferencia(valorTransferencia, contaOrigem, contaDestino);
     }

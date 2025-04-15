@@ -32,6 +32,7 @@ public class TransferenciaService {
         this.contaCorrenteService = contaCorrenteService;
     }
 
+    //Lista todas as transferências cadastradas no banco de dados e lança exceção se não encontra nenhuma
     public List<Transferencia> listarTodasAsTransferencias(){
         List<Transferencia> listaTransferencia = transferenciaRepository.findAll();
         if (listaTransferencia.isEmpty()) {
@@ -40,31 +41,37 @@ public class TransferenciaService {
         return listaTransferencia;
     }
 
+    //Busca tranferência pelo seu ID e lança exceção se não encontra nenhuma
     public Transferencia buscarPorId(Long id){
         return transferenciaRepository.findByIdTransferencia(id)
                 .orElseThrow(() -> new TransferenciaNaoEncontradaException("Não foi encontrada nenhuma transferência com esse id."));
     }
 
+    //Busca tranferência pelo número da conta-corrente associada a ela e lança exceção se não encontra nenhuma
     public List<Transferencia> buscarPorContaCorrente(ContaCorrente contaCorrente){
         return transferenciaRepository.findByContaCorrenteDestinoOrContaCorrenteOrigemOrderByDataHoraTransferenciaDesc(contaCorrente, contaCorrente)
                 .orElseThrow(() -> new TransferenciaNaoEncontradaException("Transferência não encontrada"));
     }
 
+    //Cadastra uma nova transferência no banco de dados e dá rollback se inserção falhar
     @Transactional
     public Transferencia cadastrarTransferencia(Transferencia transferencia){
         return transferenciaRepository.save(transferencia);
     }
 
+    //Valida se saldo da conta-corrente de origem é suficiente para aquela transferência
     public boolean validarSaldoContaOrigem(Transferencia transferencia){
         ContaCorrente contaCorrente = transferencia.getContaCorrenteOrigem();
         return contaCorrenteRepository
                 .findSaldoById(contaCorrente.getNumContaCorrente()) >= transferencia.getValorTransferencia();
     }
 
+    //Valida se valor transferido é menor ou igual ao limite
     public boolean validarLimite(Transferencia transferencia){
         return transferencia.getValorTransferencia() <= 100.00;
     }
 
+    //Chama os métodos de validação e caso dê erro, salva status da transferência como FALHA e lança exceção
     public Transferencia validaTransferencia(Transferencia transferencia){
         if (!validarLimite(transferencia)) {
             transferencia.setStatusTransferencia(StatusTransferencia.FALHA);
@@ -84,17 +91,22 @@ public class TransferenciaService {
         return transferencia;
     }
 
+    //Busca as contas associadas à transferência e concretiza a transação, dando rollback em caso de falha
     @Transactional
     public void realizarTransferencia(Transferencia transferencia){
         try{
+            //Busca valor que se deseja transferir
             Double valor = transferencia.getValorTransferencia();
 
+            //Busca as contas de Origem e Destino
             ContaCorrente contaCorrenteOrigem = contaCorrenteService.buscarPorId(transferencia.getContaCorrenteOrigem().getNumContaCorrente());
             ContaCorrente contaCorrenteDestino = contaCorrenteService.buscarPorId(transferencia.getContaCorrenteDestino().getNumContaCorrente());
 
+            //Tira valor transferido da conta de Origem e acrescenta à de destino
             contaCorrenteOrigem.setSaldo(contaCorrenteOrigem.getSaldo() - valor);
             contaCorrenteDestino.setSaldo(contaCorrenteDestino.getSaldo() + valor);
 
+            //Salva a alteração no saldo das contas no banco de dados
             contaCorrenteRepository.save(contaCorrenteOrigem);
             contaCorrenteRepository.save(contaCorrenteDestino);
         } catch (NullPointerException e){
@@ -109,6 +121,7 @@ public class TransferenciaService {
 
     }
 
+    //Atualiza o status da transferência para FINALIZADO e lança exceção em caso de falha
     @Transactional
     public Transferencia finalizarTransferencia(Transferencia transferencia) {
         transferencia.setStatusTransferencia(StatusTransferencia.FINALIZADO);

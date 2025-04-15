@@ -21,6 +21,7 @@ public class ContaCorrenteDTO {
     @Digits(integer = 3, fraction = 2)
     private Double saldo;
 
+    //Conversão para acessar os métodos da classe
     public ContaCorrente toDomain(){
         return new ContaCorrente(numContaCorrente, saldo);
     }

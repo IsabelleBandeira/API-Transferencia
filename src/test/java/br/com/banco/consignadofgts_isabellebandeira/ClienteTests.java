@@ -48,12 +48,15 @@ public class ClienteTests {
         clientedto.setNome("Isabelle Bandeira");
     }
 
+    //Testa endpoint para cadastro de clientes
     @Test
     @Transactional
     public void test_cadastrarClienteSucesso() throws Exception {
+        //Prepara um clienteDTO para enviar para o endpoint
         ClienteDTO clientedto = new ClienteDTO();
         clientedto.setNome("Isabelle Bandeira");
 
+        //Chama a API, converte o DTO pra uma string JSON e espera resposta de sucesso
         mockMvc.perform(post("/api/v1/cliente/cadastracliente")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(clientedto)))
@@ -63,13 +66,16 @@ public class ClienteTests {
 
     }
 
+    //Testa endpoint para atualizar cadastro de clientes
     @Test
     @Transactional
     public void test_atualizarClienteSucesso() throws Exception {
+        //Prepara clienteDTO para enviar para o endpoint
         ClienteDTO clientedto = new ClienteDTO();
         clientedto.setNome("Isabelle Bandeira");
         clientedto.setIdCliente(1L);
 
+        //Chama a API, converte o DTO pra uma string JSON e espera resposta de sucesso
         mockMvc.perform(post("/api/v1/cliente/atualizacliente")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(clientedto)))

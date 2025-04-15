@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-//Controla o acesso às rotas relacionadas ao Cliente. API na versão v1.
+//Gerencia rotas relacionadas ao Cliente. API na versão v1.
 @RestController
 @RequestMapping("/api/v1/cliente")
 public class ClienteController {

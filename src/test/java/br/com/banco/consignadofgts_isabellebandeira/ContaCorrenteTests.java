@@ -37,13 +37,16 @@ public class ContaCorrenteTests {
         contaCorrenteRepository.save(conta);
     }
 
+    //Testa endpoint para depositar saldo na conta-corrente
     @Test
     @Transactional
     public void test_depositarSaldoComSucesso() throws Exception {
+        //Prepara contaCorrenteDTO para enviar para o endpoint
         ContaCorrenteDTO contaCorrenteDTO = new ContaCorrenteDTO();
         contaCorrenteDTO.setNumContaCorrente(1L);
         contaCorrenteDTO.setSaldo(0.00);
 
+        //Chama a API, converte o DTO pra uma string JSON e espera resposta de sucesso
         mockMvc.perform(post("/api/v1/conta-corrente/depositar")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(contaCorrenteDTO)))
