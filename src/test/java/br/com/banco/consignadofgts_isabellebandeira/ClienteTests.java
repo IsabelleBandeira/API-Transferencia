@@ -3,6 +3,7 @@ package br.com.banco.consignadofgts_isabellebandeira;
 import br.com.banco.consignadofgts_isabellebandeira.dto.ClienteDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +31,7 @@ public class ClienteTests {
     private ObjectMapper objectMapper;
 
     @Test
+    @Transactional
     public void test_cadastrarClienteSucesso() throws Exception {
         ClienteDTO clientedto = new ClienteDTO();
         clientedto.setNome("Isabelle Bandeira");
