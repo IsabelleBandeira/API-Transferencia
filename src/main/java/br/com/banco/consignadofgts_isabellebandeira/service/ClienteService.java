@@ -13,6 +13,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import java.util.List;
 
+//Acesso aos métodos com as regras de negócio
 @Service
 public class ClienteService {
     private final ClienteRepository clienteRepository;
@@ -22,6 +23,7 @@ public class ClienteService {
         this.clienteRepository = clienteRepository;
     }
 
+    //Lista todos os clientes do banco de dados e cria exceção se não houver nenhum
     public List<Cliente> listarTodosOsClientes(){
         List<Cliente> listaclientes = clienteRepository.findAll();
         if (listaclientes.isEmpty()) {
@@ -30,16 +32,19 @@ public class ClienteService {
         return listaclientes;
     }
 
+    //Busca um cliente no banco de dados pelo ID do cliente e lança exceção se não encontrar
     public Cliente buscarPorId(Long id){
         return clienteRepository.findById(id)
                 .orElseThrow(() -> new ClienteNaoEncontradoException("Cliente não encontrado."));
     }
 
+    //Busca um cliente no banco de dados pelo número da Conta Corrente do cliente e lança exceção se não encontrar
     public Cliente buscarPorContaCorrente(Long id){
         return clienteRepository.findByNumContacorrente_NumContaCorrente(id)
                 .orElseThrow(() -> new ClienteNaoEncontradoException("Nenhum cliente encontrado com essa conta corrente."));
     }
 
+    //Adiciona um cliente ao banco de dados e dá rollback se inserção falhar
     @Transactional
     public Cliente cadastrarCliente(Cliente cliente){
         try{
@@ -49,6 +54,7 @@ public class ClienteService {
         }
     }
 
+    //Atualiza um registro cliente do banco, e dá rollback e lança exceção se falhar
     @Transactional
     public Cliente atualizarCliente(Cliente cliente){
         try{
@@ -60,6 +66,7 @@ public class ClienteService {
         }
     }
 
+    //Deleta um registro cliente do banco de dados, e dá rollback e lança exceção se falhar
     @Transactional
     public void deletarCliente(Long idCliente){
         try{

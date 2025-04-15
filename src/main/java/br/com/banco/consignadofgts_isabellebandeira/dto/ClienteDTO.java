@@ -18,9 +18,12 @@ public class ClienteDTO {
         message = "Nome Inválido. Por favor digite seu nome completo."
     )
     private String nome;
+    private Long idCliente;
+    private ContaCorrente contaCorrente;
 
-
+    //Conversão para acessar metodos da classe
     public Cliente toDomain(ContaCorrente contaCorrente) {
         return new Cliente(nome, contaCorrente);
     }
+
 }
