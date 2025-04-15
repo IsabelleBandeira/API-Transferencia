@@ -55,4 +55,4 @@ Após seguir os passos acima, execute os testes com o comando abaixo no terminal
 ./mvnw test
 ```
 
-## Se divirta! ^^
+## Espero que curta! ^^
